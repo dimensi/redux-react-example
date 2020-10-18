@@ -5,7 +5,7 @@ import {AxiosError} from 'axios';
 import {setError} from '../errors.store';
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../../store';
-import { routerHistory } from '../../history';
+import {routerHistory} from '../../history';
 
 export type RepoMeta = typeof defaultRepo;
 export type IssuesRouteParams = {repo: string; org: string};
@@ -26,9 +26,9 @@ const initialState: IssuesState = {
   lastPage: 1,
 };
 
-const getIssuesThunk = createAsyncThunk(
+export const getIssuesThunk = createAsyncThunk(
   'issues/getIssues',
-  async ({page}: {page?: number} = {}, thunkApi) => {
+  async (page: number, thunkApi) => {
     const {issues} = thunkApi.getState() as RootState;
     try {
       return await getIssues(issues.org, issues.repo, page);
@@ -60,7 +60,7 @@ const issuesSlice = createSlice({
       });
 
       // куда бля в редаксе side-effect запихивают? АЛЁ
-      const repoURL = [org, repo].join('/');
+      const repoURL = [org.value, repo.value].join('/');
       if (!routerHistory.location.pathname.includes(`/${repoURL}`)) {
         routerHistory.push(`/${repoURL}/`);
       }

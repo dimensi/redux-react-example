@@ -1,14 +1,13 @@
 import React from 'react';
+import { Redirect, Route, Switch } from 'react-router-dom';
+import { defaultRepo } from './config';
+// import { Issue } from './features/issue';
+import { Issues } from './features/issues';
+import { useTypedSelector } from './store';
 import './styles.css';
-import {Route, Switch, Redirect} from 'react-router-dom';
-import {Issues} from './features/issues';
-import {Issue} from './features/issue';
-import {defaultRepo} from './config';
-import {useStore} from 'effector-react';
-import {$error} from './features/errors.store';
 
 export default function App() {
-  const error = useStore($error)
+  const error = useTypedSelector(state => state.error)
   return (
     <div className="App">
       {error ? (
@@ -19,7 +18,7 @@ export default function App() {
             <Issues />
           </Route>
           <Route path="/:org/:repo/issues/:id">
-            <Issue />
+            {/* <Issue /> */}
           </Route>
           <Route>
             <Redirect to={`/${defaultRepo.org}/${defaultRepo.repo}`} />
