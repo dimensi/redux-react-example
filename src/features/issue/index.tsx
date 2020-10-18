@@ -13,22 +13,24 @@ export function Issue() {
     return <div>loading</div>;
   }
 
-  return <main>
-    <Link to='../'>back to</Link>
-    <header>
-      <h1>{issue.title}</h1>
-      <p>written by {issue.user.login}</p>
-    </header>
-    <hr />
-    <Md md={issue.body} />
-    <hr />
-    <CommentsList />
-  </main>;
+  return (
+    <main>
+      <Link to="../">back to</Link>
+      <header>
+        <h1>{issue.title}</h1>
+        <p>written by {issue.user.login}</p>
+      </header>
+      <hr />
+      <Md md={issue.body} />
+      <hr />
+      <CommentsList />
+    </main>
+  );
 }
 
 export function CommentsList() {
   const comments = useStore($comments);
-  if (!comments.length) return null
+  if (!comments.length) return null;
   return (
     <div>
       <h2>comments:</h2>
