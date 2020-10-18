@@ -1,11 +1,10 @@
-import {FormEvent} from 'react';
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {AxiosError} from 'axios';
 import {ErrorMessage, getIssues, Issue} from '../../api';
 import {defaultRepo} from '../../config';
-import {AxiosError} from 'axios';
-import {setError} from '../errors.store';
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from '../../store';
 import {routerHistory} from '../../history';
+import {RootState} from '../../store';
+import {setError} from '../errors.store';
 
 export type RepoMeta = typeof defaultRepo;
 export type IssuesRouteParams = {repo: string; org: string};
@@ -44,27 +43,6 @@ const issuesSlice = createSlice({
   name: 'issues',
   initialState,
   reducers: {
-    setRepoFromForm: (
-      state,
-      action: PayloadAction<FormEvent<HTMLFormElement>>,
-    ) => {
-      const {payload: event} = action;
-      event.preventDefault();
-      const form = event.target as HTMLFormElement;
-      const org = form.elements.namedItem('org') as HTMLInputElement;
-      const repo = form.elements.namedItem('repo') as HTMLInputElement;
-
-      Object.assign(state, {
-        org: org.value,
-        repo: repo.value,
-      });
-
-      // куда бля в редаксе side-effect запихивают? АЛЁ
-      const repoURL = [org.value, repo.value].join('/');
-      if (!routerHistory.location.pathname.includes(`/${repoURL}`)) {
-        routerHistory.push(`/${repoURL}/`);
-      }
-    },
     setRepo: (state, action: PayloadAction<RepoMeta>) => {
       Object.assign(state, action.payload);
     },
@@ -86,5 +64,5 @@ const issuesSlice = createSlice({
 
 export const {
   reducer: issuesReducer,
-  actions: {changePage, setRepo, setRepoFromForm},
+  actions: {changePage, setRepo},
 } = issuesSlice;
