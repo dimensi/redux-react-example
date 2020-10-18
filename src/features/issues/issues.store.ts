@@ -32,9 +32,9 @@ export const getIssuesThunk = createAsyncThunk(
     try {
       return await getIssues(issues.org, issues.repo, page);
     } catch (err) {
-      thunkApi.dispatch(
-        setError((err as AxiosError<ErrorMessage>).response!.data),
-      );
+      const e = (err as AxiosError<ErrorMessage>).response!.data;
+      thunkApi.dispatch(setError(e));
+      throw e;
     }
   },
 );
