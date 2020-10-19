@@ -20,14 +20,14 @@ export function Issue() {
   useEffect(() => {
     if (repoMeta.repo === '' && repoMeta.org === '') return;
 
-    if (!issue || issue.id !== Number(id)) {
+    if (!issue || issue.number !== Number(id)) {
       dispatch(getIssueThunk(id));
     }
-
-    return () => {
-      dispatch(clearIssueState());
-    };
   }, [id, repoMeta, dispatch, issue]);
+
+  useEffect(() => () => {
+    dispatch(clearIssueState())
+  }, [dispatch])
 
   useEffect(() => {
     if (issue?.comments_url) {
