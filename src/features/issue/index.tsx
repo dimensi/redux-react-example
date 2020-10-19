@@ -18,7 +18,7 @@ export function Issue() {
   const repoMeta = useTypedSelector((state) => state.repo);
 
   useEffect(() => {
-    if (repoMeta.repo === '' && repoMeta.org === '') return;
+    if (!Object.values(repoMeta).every(Boolean)) return;
 
     if (!issue || issue.number !== Number(id)) {
       dispatch(getIssueThunk(id));

@@ -22,7 +22,7 @@ export const getIssuesThunk = createAsyncThunk(
   async (page: number, thunkApi) => {
     const {repo} = thunkApi.getState() as RootState;
     try {
-      return await getIssues(repo.org, repo.repo, page);
+      return await getIssues(repo.org, repo.name, page);
     } catch (err) {
       const e = (err as AxiosError<ErrorMessage>).response!.data;
       thunkApi.dispatch(setError(e));

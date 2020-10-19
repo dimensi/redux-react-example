@@ -3,10 +3,10 @@ import {defaultRepo} from '../config';
 
 export type RepoMeta = typeof defaultRepo;
 
-const initialState: RepoMeta = {org: '', repo: ''};
+const initialState: RepoMeta = {org: '', name: ''};
 
 const repoSlice = createSlice({
-  name: 'repo',
+  name: 'repository',
   initialState,
   reducers: {
     setRepo: (state, action: PayloadAction<RepoMeta>) => ({

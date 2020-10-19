@@ -3,7 +3,7 @@ import {TypedUseSelectorHook, useSelector} from 'react-redux';
 import {errorReducer} from './features/errors.store';
 import {issueReducer} from './features/issue/issue.store';
 import {issuesReducer} from './features/issues/issues.store';
-import {repoReducer} from './features/repo.store';
+import {repoReducer} from './features/repository.store';
 
 export const store = configureStore({
   reducer: {

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link, useParams} from 'react-router-dom';
 import {Issue} from '../../api';
-import {RepoMeta} from '../repo.store';
+import {RepoMeta} from '../repository.store';
 
 export function IssuesList({issues}: {issues: Issue[]}) {
   return (
@@ -18,7 +18,7 @@ function IssueItem({issue: {number, title, user, labels}}: {issue: Issue}) {
   return (
     <article style={{marginBottom: 24}}>
       <header style={{display: 'flex', alignItems: 'center'}}>
-        <Link to={`/${params.org}/${params.repo}/issues/${number}`}>
+        <Link to={`/${params.org}/${params.name}/issues/${number}`}>
           <strong>
             #{number}: {title}
           </strong>

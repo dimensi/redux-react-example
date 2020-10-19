@@ -3,7 +3,7 @@ import {useDispatch} from 'react-redux';
 import {useHistory, useParams} from 'react-router-dom';
 import {isMissmatchRepo} from '../../helpers';
 import {useTypedSelector} from '../../store';
-import {RepoMeta, setRepo} from '../repo.store';
+import {RepoMeta, setRepo} from '../repository.store';
 import {IssuesList} from './issues-list';
 import {getIssuesThunk} from './issues.store';
 import {Pagination} from './pagination';
@@ -30,11 +30,11 @@ export const Issues: FC = () => {
       event.preventDefault();
       const form = event.target as HTMLFormElement;
       const {value: org} = form.elements.namedItem('org') as HTMLInputElement;
-      const {value: repo} = form.elements.namedItem('repo') as HTMLInputElement;
+      const {value: name} = form.elements.namedItem('name') as HTMLInputElement;
 
-      dispatch(setRepo({org, repo}));
+      dispatch(setRepo({org, name}));
 
-      const repoURL = [org, repo].join('/');
+      const repoURL = [org, name].join('/');
       if (!routerHistory.location.pathname.includes(`/${repoURL}`)) {
         routerHistory.push(`/${repoURL}/`);
       }
@@ -54,9 +54,9 @@ export const Issues: FC = () => {
           />
           <input
             type="text"
-            name="repo"
-            placeholder="repo"
-            defaultValue={repoMeta.repo}
+            name="name"
+            placeholder="name"
+            defaultValue={repoMeta.name}
           />
           <button>change</button>
         </form>

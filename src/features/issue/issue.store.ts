@@ -22,10 +22,10 @@ export const getIssueThunk = createAsyncThunk(
   'issue/getIssue',
   async (id: string, thunkApi) => {
     const {
-      repo: {org, repo},
+      repo: {org, name},
     } = thunkApi.getState() as RootState;
     try {
-      return getIssue(org, repo, Number(id));
+      return await getIssue(org, name, Number(id));
     } catch (err) {
       const e = (err as AxiosError<ErrorMessage>).response!.data;
       thunkApi.dispatch(setError(e));
@@ -38,7 +38,7 @@ export const getCommentsThunk = createAsyncThunk(
   'issue/getComments',
   async (commentsUrl: string, thunkApi) => {
     try {
-      return getComments(commentsUrl);
+      return await getComments(commentsUrl);
     } catch (err) {
       const e = (err as AxiosError<ErrorMessage>).response!.data;
       thunkApi.dispatch(setError(e));
