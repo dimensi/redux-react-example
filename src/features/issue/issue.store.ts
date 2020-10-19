@@ -2,7 +2,7 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {AxiosError} from 'axios';
 import {Comment, ErrorMessage, getComments, getIssue, Issue} from '../../api';
 import {RootState} from '../../store';
-import {setError} from '../errors.store'
+import {setError} from '../errors.store';
 
 export interface IssueRouteParams {
   id: string;
@@ -22,7 +22,7 @@ export const getIssueThunk = createAsyncThunk(
   'issue/getIssue',
   async (id: string, thunkApi) => {
     const {
-      issues: {org, repo},
+      repo: {org, repo},
     } = thunkApi.getState() as RootState;
     try {
       return getIssue(org, repo, Number(id));
@@ -50,7 +50,12 @@ export const getCommentsThunk = createAsyncThunk(
 const issueSlice = createSlice({
   name: 'issue',
   initialState,
-  reducers: {},
+  reducers: {
+    clearIssueState: (state) => {
+      state.comments = [];
+      state.issue = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getIssueThunk.fulfilled, (state, action) => {
       state.issue = action.payload;
@@ -62,4 +67,7 @@ const issueSlice = createSlice({
   },
 });
 
-export const {reducer: issueReducer} = issueSlice;
+export const {
+  reducer: issueReducer,
+  actions: {clearIssueState},
+} = issueSlice;

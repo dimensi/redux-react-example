@@ -1,13 +1,39 @@
-import {useGate, useStore} from 'effector-react';
-import React from 'react';
-import {$comments, $issue, issueGate} from './issue.store';
+import React, {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
 import {Link, useParams} from 'react-router-dom';
+import {Comment} from '../../api';
 import {Md} from '../../components/md';
+import {useTypedSelector} from '../../store';
+import {
+  clearIssueState,
+  getCommentsThunk,
+  getIssueThunk,
+  IssueRouteParams,
+} from './issue.store';
 
 export function Issue() {
-  useGate(issueGate, useParams());
+  const {id}: IssueRouteParams = useParams();
+  const dispatch = useDispatch();
+  const {issue, comments} = useTypedSelector((state) => state.issue);
+  const repoMeta = useTypedSelector((state) => state.repo);
 
-  const issue = useStore($issue);
+  useEffect(() => {
+    if (repoMeta.repo === '' && repoMeta.org === '') return;
+
+    if (!issue || issue.id !== Number(id)) {
+      dispatch(getIssueThunk(id));
+    }
+
+    return () => {
+      dispatch(clearIssueState());
+    };
+  }, [id, repoMeta, dispatch, issue]);
+
+  useEffect(() => {
+    if (issue?.comments_url) {
+      dispatch(getCommentsThunk(issue.comments_url));
+    }
+  }, [issue, dispatch]);
 
   if (!issue) {
     return <div>loading</div>;
@@ -23,13 +49,12 @@ export function Issue() {
       <hr />
       <Md md={issue.body} />
       <hr />
-      <CommentsList />
+      <CommentsList comments={comments} />
     </main>
   );
 }
 
-export function CommentsList() {
-  const comments = useStore($comments);
+export function CommentsList({comments}: {comments: Comment[]}) {
   if (!comments.length) return null;
   return (
     <div>

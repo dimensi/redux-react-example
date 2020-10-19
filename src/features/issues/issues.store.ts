@@ -1,26 +1,18 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {AxiosError} from 'axios';
 import {ErrorMessage, getIssues, Issue} from '../../api';
-import {defaultRepo} from '../../config';
 import {routerHistory} from '../../history';
 import {RootState} from '../../store';
 import {setError} from '../errors.store';
 
-export type RepoMeta = typeof defaultRepo;
-export type IssuesRouteParams = {repo: string; org: string};
-
 interface IssuesState {
   issues: Issue[];
-  org: string;
-  repo: string;
   page: number;
   lastPage: number;
 }
 
 const initialState: IssuesState = {
   issues: [],
-  org: '',
-  repo: '',
   page: 1,
   lastPage: 1,
 };
@@ -28,9 +20,9 @@ const initialState: IssuesState = {
 export const getIssuesThunk = createAsyncThunk(
   'issues/getIssues',
   async (page: number, thunkApi) => {
-    const {issues} = thunkApi.getState() as RootState;
+    const {repo} = thunkApi.getState() as RootState;
     try {
-      return await getIssues(issues.org, issues.repo, page);
+      return await getIssues(repo.org, repo.repo, page);
     } catch (err) {
       const e = (err as AxiosError<ErrorMessage>).response!.data;
       thunkApi.dispatch(setError(e));
@@ -43,9 +35,6 @@ const issuesSlice = createSlice({
   name: 'issues',
   initialState,
   reducers: {
-    setRepo: (state, action: PayloadAction<RepoMeta>) => {
-      Object.assign(state, action.payload);
-    },
     changePage: (state, action: PayloadAction<number>) => {
       state.page = action.payload;
       routerHistory.push({
@@ -64,5 +53,5 @@ const issuesSlice = createSlice({
 
 export const {
   reducer: issuesReducer,
-  actions: {changePage, setRepo},
+  actions: {changePage},
 } = issuesSlice;

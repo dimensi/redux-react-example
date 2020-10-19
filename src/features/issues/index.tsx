@@ -1,37 +1,27 @@
 import React, {FC, FormEvent, useCallback, useEffect} from 'react';
 import {useDispatch} from 'react-redux';
 import {useHistory, useParams} from 'react-router-dom';
+import {isMissmatchRepo} from '../../helpers';
 import {useTypedSelector} from '../../store';
+import {RepoMeta, setRepo} from '../repo.store';
 import {IssuesList} from './issues-list';
-import {
-  getIssuesThunk,
-  IssuesRouteParams,
-  RepoMeta,
-  setRepo,
-} from './issues.store';
+import {getIssuesThunk} from './issues.store';
 import {Pagination} from './pagination';
 import {useWatchPage} from './use-watch-page';
 
-const isMissmatchRepo = (state: RepoMeta, route: RepoMeta) =>
-  state.repo !== route.repo && state.org !== route.org;
-
 export const Issues: FC = () => {
-  const routeParams: IssuesRouteParams = useParams();
+  const routeParams: RepoMeta = useParams();
   const routerHistory = useHistory();
   const dispatch = useDispatch();
-  const {page, lastPage, issues, ...meta} = useTypedSelector(
-    (state) => state.issues,
-  );
+  const {page, lastPage, issues} = useTypedSelector((state) => state.issues);
 
-  if (isMissmatchRepo(meta, routeParams)) {
-    dispatch(setRepo(routeParams));
-  }
+  const repoMeta = useTypedSelector((state) => state.repo);
 
   useEffect(() => {
-    if (!isMissmatchRepo(meta, routeParams)) {
+    if (!isMissmatchRepo(repoMeta, routeParams)) {
       dispatch(getIssuesThunk(page));
     }
-  }, [page, meta.repo, meta.org, routeParams, dispatch]);
+  }, [page, repoMeta, routeParams, dispatch]);
 
   useWatchPage();
 
@@ -60,13 +50,13 @@ export const Issues: FC = () => {
             type="text"
             name="org"
             placeholder="org"
-            defaultValue={meta.org}
+            defaultValue={repoMeta.org}
           />
           <input
             type="text"
             name="repo"
             placeholder="repo"
-            defaultValue={meta.repo}
+            defaultValue={repoMeta.repo}
           />
           <button>change</button>
         </form>
